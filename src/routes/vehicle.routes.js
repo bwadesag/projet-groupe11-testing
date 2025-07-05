@@ -1,7 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const vehicleController = require('../controllers/vehicle.controller');
+const { authenticateToken, requireAuth } = require('../middleware/auth');
 const { validateVehicle } = require('../middleware/validation');
+
+// Toutes les routes véhicules nécessitent une authentification
+router.use(authenticateToken);
+router.use(requireAuth);
 
 // Get all vehicles
 router.get('/', vehicleController.getAllVehicles);
