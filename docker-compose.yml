@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_USER=propelize
+      - DB_PASSWORD=propelize_password
+      - DB_NAME=propelize_vehicles
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+    networks:
+      - propelize-network
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=propelize_vehicles
+      - MYSQL_USER=propelize
+      - MYSQL_PASSWORD=propelize_password
+      - MYSQL_ROOT_PASSWORD=root_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - propelize-network
+
+volumes:
+  mysql-data:
+
+networks:
+  propelize-network:
+    driver: bridge 
